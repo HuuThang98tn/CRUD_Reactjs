@@ -145,13 +145,14 @@ const Employee = () => {
     }, [])
 
     const searchView = () => {
+
         if (bangSearch.length > 0) {
             var data = JSON.stringify({
-                "status": bangSearch
+                "bang": bangSearch
             });
             var config = {
                 method: 'post',
-                url: 'http://localhost:3000/api-v1/search/status',
+                url: 'http://localhost:3000/api-v1/search/bang',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -167,9 +168,10 @@ const Employee = () => {
                     alert(error);
                 });
         }
-
-
     }
+
+
+
     const handleSearchStatus = (e) => {
         console.log(e.target.value);
         setValustatus(e.target.value);
@@ -190,8 +192,9 @@ const Employee = () => {
 
 
         axios(config)
-            .then(function (response) {
-                setData(response.data.results)
+            .then(async function (response) {
+                console.log(response.data.results);
+                await setData(response.data.results)
             })
             .catch(function (error) {
                 alert(error);
