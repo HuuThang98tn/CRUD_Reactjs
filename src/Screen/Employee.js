@@ -25,90 +25,118 @@ const Employee = () => {
     const hanldePostClose = () => { SetPostShow(false) }
 
     //Define here local state that store the form Data
-    const [name, setname] = useState("")
-    const [email, setemail] = useState("")
-    const [number, setnumber] = useState("")
-    const [textSearch, setTextSearch] = useState("")
-    const [address, setaddress] = useState("")
+    const [bang, setBang] = useState("")
+    const [zip, setZip] = useState("")
+    const [gmail, setGmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [info, setInfo] = useState("")
+    const [note, setNote] = useState("")
+    const [status, setStatus] = useState("")
+    const [valueStatus, setValustatus] = useState("");
+    const [bangSearch, setBangSearch] = useState("")
+
 
     const [Delete, setDelete] = useState(false)
     //Id for update record and Delete
     const [id, setId] = useState("");
+    const URLS = "http://localhost:3000/api-v1/todos"
     const GetEmployeeData = () => {
-        //here we will get all employee data
-        const url = 'http://localhost:8000/employee'
-        axios.get(url)
-            .then(response => {
-                const result = response.data;
-                const { status, message, data } = result;
-                if (status !== 'SUCCESS') {
-                    alert(message, status)
-                }
-                else {
-                    setData(data)
-                    console.log(data)
-                }
+        var config = {
+            method: 'get',
+            url: `${URLS}/get-list`,
+            headers: {}
+        };
+        axios(config)
+            .then(function (response) {
+                setData(response.data.results)
             })
-            .catch(err => {
-                console.log(err)
-            })
+            .catch(function (error) {
+                // console.log(error);
+                alert(error)
+
+            });
     }
     const handleSubmite = () => {
-        const url = 'http://localhost:8000/employee'
-        const Credentials = { name, email, number, address }
-        axios.post(url, Credentials)
-            .then(response => {
-                const result = response.data;
-                const { status, message, data } = result;
-                if (status !== 'SUCCESS') {
-                    alert(message, status)
-                }
-                else {
-                    alert(message)
-                    window.location.reload()
-                }
+        var data = JSON.stringify({
+            "_id": id,
+            "bang": bang,
+            "zip": zip,
+            "gmail": gmail,
+            "password": password,
+            "info": info,
+            "note": note,
+            "status": status
+        });
+        var config = {
+            method: 'post',
+            url: `${URLS}/create`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+        axios(config)
+            .then(function (response) {
+                window.location.reload()
             })
-            .catch(err => {
-                console.log(err)
-            })
+            .catch(function (error) {
+                alert(error)
+            });
     }
     const handleEdit = () => {
-        const url = `http://localhost:8000/employee/${id}`
-        const Credentials = { name, email, number, address }
-        axios.put(url, Credentials)
-            .then(response => {
-                const result = response.data;
-                const { status, message } = result;
-                if (status !== 'SUCCESS') {
-                    alert(message, status)
-                }
-                else {
-                    alert(message)
-                    window.location.reload()
-                }
+
+        var data = JSON.stringify({
+            "_id": id,
+            "bang": bang,
+            "zip": zip,
+            "gmail": gmail,
+            "password": password,
+            "info": info,
+            "note": note,
+            "status": status
+        });
+        var config = {
+            method: 'post',
+            url: `${URLS}}/update-byId`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+
+        axios(config)
+            .then(function (response) {
+                // console.log(JSON.stringify(response.data));
+                window.location.reload()
             })
-            .catch(err => {
-                console.log(err)
-            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error)
+            });
+
     }
     //handle Delete Function 
     const handleDelete = () => {
-        const url = `http://localhost:8000/employee/${id}`
-        axios.delete(url)
-            .then(response => {
-                const result = response.data;
-                const { status, message } = result;
-                if (status !== 'SUCCESS') {
-                    alert(message, status)
-                }
-                else {
-                    alert(message)
-                    window.location.reload()
-                }
+        var data = JSON.stringify({
+            idData: id
+        });
+        var config = {
+            method: 'post',
+            url: `${URLS}/delete-byId`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+        axios(config)
+            .then(function (response) {
+                console.log(JSON.stringify(response.data));
+                window.location.reload()
             })
-            .catch(err => {
-                console.log(err)
-            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error)
+            });
     }
     //call this function in useEffect
     console.log(ViewShow, RowData)
@@ -116,8 +144,60 @@ const Employee = () => {
         GetEmployeeData();
     }, [])
 
+    const searchView = () => {
+        if (bangSearch.length > 0) {
+            var data = JSON.stringify({
+                "status": bangSearch
+            });
+            var config = {
+                method: 'post',
+                url: 'http://localhost:3000/api-v1/search/status',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(config)
+                .then(function (response) {
+                    setData(response.data.results)
+                    setBangSearch("")
+                })
+                .catch(function (error) {
+                    alert(error);
+                });
+        }
 
 
+    }
+    const handleSearchStatus = (e) => {
+        console.log(e.target.value);
+        setValustatus(e.target.value);
+    }
+
+    useEffect(() => {
+        var data = JSON.stringify({
+            "status": valueStatus
+        });
+        var config = {
+            method: 'post',
+            url: 'http://localhost:3000/api-v1/search/status',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+
+
+        axios(config)
+            .then(function (response) {
+                setData(response.data.results)
+            })
+            .catch(function (error) {
+                alert(error);
+            });
+
+    }, [valueStatus])
 
 
     // const indexOfLastPost = currentPage * postsPerPage;
@@ -147,11 +227,34 @@ const Employee = () => {
                     </Button>
                 </div>
                 <div
-                    className='mt-3'
+                    className='mt-3 row'
                     style={{
                         width: "100%",
                         height: "68px",
                     }}>
+
+                    <div
+                        style={{
+                            width: "15%",
+                            height: "48px",
+                            position: "absolute",
+                            right: "30%",
+                        }}
+                        className='form-group'>
+                        <Form.Select
+                            value={valueStatus}
+                            onChange={e => {
+                                handleSearchStatus(e)
+                                // console.log("e.target.value", e.target.value);
+                            }}
+                            aria-label="Default select example">
+                            <option>Tìm theo trạng thái</option>
+                            <option value="1">Sai password</option>
+                            <option value="2">Đã dùng</option>
+                            <option value="3">Chưa dùng</option>
+                        </Form.Select>
+                    </div>
+
                     <div
                         style={{
                             width: "30%",
@@ -161,16 +264,14 @@ const Employee = () => {
                         }}
                         className='form-group'>
                         <InputGroup className="mb-3">
-                            <Form.Control
-                                placeholder="Tìm kiếm..."
-                                aria-label="Username"
-                                aria-describedby="basic-addon1"
-                            />
+                            <input
+                                required
+                                type="text" className='form-control'
+                                onChange={(e) => setBangSearch(e.target.value)}
+                                placeholder="Tìm kiếm theo bang..." />
                             <Button
-                                onClick={()=>{
-                                    console.log("ok");
-                                }}
-                            variant="outline-secondary" id="button-addon2">
+                                onClick={() => { searchView() }}
+                                variant="outline-secondary" id="button-addon2">
                                 Tìm kiếm
                             </Button>
                         </InputGroup>
@@ -184,22 +285,32 @@ const Employee = () => {
                         className='table table-striped table-hover table-bordered'>
                         <thead>
                             <tr>
-                                <th>Họ và tên</th>
-                                <th>Địa chỉ gmail</th>
-                                <th>SĐT</th>
-                                {/* <th>NIC</th> */}
-                                <th>Địa chỉ liên lạc</th>
+                                <th>STT</th>
+                                <th>Bang</th>
+                                <th>Zip</th>
+                                <th>Gmail</th>
+                                <th>Password</th>
+                                <th>Info</th>
+                                <th>Status</th>
+                                <th>Note</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {Datas.map((item) =>
+                            {Data.map((item, index) =>
                                 <tr key={item._id}>
-                                    <td>{item.name}</td>
-                                    <td>{item.email}</td>
-                                    <td>{item.number}</td>
-                                    {/* <td>{item.nic}</td> */}
-                                    <td>{item.address}</td>
+                                    <td>{index + 1}</td>
+                                    <td>{item.bang}</td>
+                                    <td>{item.zip}</td>
+                                    <td>{item.gmail}</td>
+                                    <td>{item.password}</td>
+                                    <td>{item.info}</td>
+                                    <td>{item.status === "1" ? "Sai PassWord"
+                                        : item.status === "2" ? "Đã dùng"
+                                            : item.status === "3" ? "Chưa dùng" : "Trạng thái theo thứ tự 1,2,3"
+                                    }</td>
+                                    <td>{item.note}</td>
+
                                     <td style={{ minWidth: 190 }}>
                                         <Button
                                             className='col-md-3'
@@ -227,34 +338,73 @@ const Employee = () => {
                     keyboard={false}
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title>View Employee Data</Modal.Title>
+                        <Modal.Title>Xem dữ liệu nhân viên</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div>
                             <div className='form-group'>
-                                <input type="text" className='form-control' value={RowData.name} readOnly />
+                                <label>BANG</label>
+                                <input type="text" className='form-control' value={RowData.bang} readOnly />
                             </div>
                             <div className='form-group mt-3'>
-                                <input type="email" className='form-control' value={RowData.email} readOnly />
+                                <label>ZIP</label>
+                                <input type="email" className='form-control' value={RowData.zip} readOnly />
                             </div>
                             <div className='form-group mt-3'>
-                                <input type="text" className='form-control' value={RowData.number} readOnly />
+                                <label>GMAIL</label>
+                                <input type="text" className='form-control' value={RowData.gmail} readOnly />
                             </div>
-                            {/* <div className='form-group mt-3'>
-                                <input type="text" className='form-control' value={RowData.nic} readOnly />
-                            </div> */}
                             <div className='form-group mt-3'>
-                                <input type="text" className='form-control' value={RowData.address} readOnly />
+                                <label>PASSWORD</label>
+                                <input type="text" className='form-control' value={RowData.password} readOnly />
                             </div>
-                            {
-                                Delete && (
-                                    <Button type='submit' className='btn btn-danger mt-4' onClick={handleDelete}>Delete Employee</Button>
-                                )
-                            }
+                            <div className='form-group mt-3'>
+                                <label>INFO</label>
+                                <input type="text" className='form-control' value={RowData.info} readOnly />
+                            </div>
+                            <div className='form-group mt-3'>
+                                <label>TRẠNG THÁI</label>
+                                <input type="text" className='form-control' value={
+                                    RowData.status === "1" ? "Sai PassWord"
+                                        : RowData.status === "2" ? "Đã dùng"
+                                            : RowData.status === "3" ? "Chưa dùng" : null} readOnly />
+                            </div>
+                            <div className='form-group mt-3'>
+                                <label>NOTE</label>
+                                <input type="text" className='form-control' value={RowData.note} readOnly />
+                            </div>
+
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant='secondary' onClick={hanldeViewClose}>Close</Button>
+                        <div
+                            className='row'
+                            style={{
+                                width: "100%",
+                                height: "68px",
+                                alignItems: "center",
+                                justifyContent: "flex-end",
+                            }}>
+                            <div
+                                style={{
+                                    width: "45%",
+                                    height: "68px",
+                                }}>
+                                {
+                                    Delete && (
+                                        <Button type='submit' className='btn btn-danger ' onClick={handleDelete}>Xóa bản ghi</Button>
+                                    )
+                                }
+                            </div>
+                            <div
+                                style={{
+                                    width: "20%",
+                                    height: "68px",
+                                }}>
+                                <Button variant='secondary' onClick={hanldeViewClose}>Đóng</Button>
+                            </div>
+                        </div>
+
                     </Modal.Footer>
                 </Modal>
             </div>
@@ -272,21 +422,33 @@ const Employee = () => {
                     <Modal.Body>
                         <div>
                             <div className='form-group'>
-                                <input type="text" className='form-control' onChange={(e) => setname(e.target.value)} placeholder="Vui lòng nhập tên" />
+                                <label>BANG</label>
+                                <input type="text" className='form-control' onChange={(e) => setBang(e.target.value)} placeholder="Vui lòng nhập bang" />
                             </div>
                             <div className='form-group mt-3'>
-                                <input type="email" className='form-control' onChange={(e) => setemail(e.target.value)} placeholder="Vui lòng nhập email" />
+                                <label>ZIP</label>
+                                <input type="text" className='form-control' onChange={(e) => setZip(e.target.value)} placeholder="Vui lòng nhập mã zip" />
                             </div>
                             <div className='form-group mt-3'>
-                                <input type="text" className='form-control' onChange={(e) => setnumber(e.target.value)} placeholder="Vui lòng nhập số điện thoại" />
+                                <label>GMAIL</label>
+                                <input type="email" className='form-control' onChange={(e) => setGmail(e.target.value)} placeholder="Vui lòng nhập gmail" />
                             </div>
-                            {/* <div className='form-group mt-3'>
-                                <input type="text" className='form-control' onChange={(e) => setnic(e.target.value)} placeholder="Please enter NIC" />
-                            </div> */}
                             <div className='form-group mt-3'>
-                                <input type="text" className='form-control' onChange={(e) => setaddress(e.target.value)} placeholder="Vui lòng nhập địa chỉ" />
+                                <label>PASSWORD</label>
+                                <input type="text" className='form-control' onChange={(e) => setPassword(e.target.value)} placeholder="Vui lòng nhập password" />
                             </div>
-
+                            <div className='form-group mt-3'>
+                                <label>INFO</label>
+                                <input type="text" className='form-control' onChange={(e) => setInfo(e.target.value)} placeholder="Vui lòng nhập địa chỉ" />
+                            </div>
+                            <div className='form-group mt-3'>
+                                <label>STATUS</label>
+                                <input type="text" className='form-control' onChange={(e) => setStatus(e.target.value)} placeholder="Vui lòng nhập trạng thái" />
+                            </div>
+                            <div className='form-group mt-3'>
+                                <label>NOTE</label>
+                                <input type="text" className='form-control' onChange={(e) => setNote(e.target.value)} placeholder="Vui lòng nhập ghi chú" />
+                            </div>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
@@ -329,35 +491,68 @@ const Employee = () => {
                     keyboard={false}
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title>Edit Employee</Modal.Title>
+                        <Modal.Title>Chỉnh sửa bản ghi</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div>
                             <div className='form-group'>
-                                <label>Name</label>
-                                <input type="text" className='form-control' onChange={(e) => setname(e.target.value)} placeholder="Vui lòng nhập tên" defaultValue={RowData.name} />
+                                <label>BANG</label>
+                                <input type="text" className='form-control' onChange={(e) => setBang(e.target.value)} placeholder="Vui lòng nhập bang" defaultValue={RowData.bang} />
                             </div>
                             <div className='form-group mt-3'>
-                                <label>Email</label>
-                                <input type="email" className='form-control' onChange={(e) => setemail(e.target.value)} placeholder="Vui lòng nhập email" defaultValue={RowData.email} />
+                                <label>ZIP</label>
+                                <input type="text" className='form-control' onChange={(e) => setZip(e.target.value)} placeholder="Vui lòng nhập mã zip" defaultValue={RowData.zip} />
                             </div>
                             <div className='form-group mt-3'>
-                                <label>Number</label>
-                                <input type="text" className='form-control' onChange={(e) => setnumber(e.target.value)} placeholder="Vui lòng nhập số điện thoại" defaultValue={RowData.number} />
+                                <label>GMAIL</label>
+                                <input type="email" className='form-control' onChange={(e) => setGmail(e.target.value)} placeholder="Vui lòng nhập gmail" defaultValue={RowData.gmail} />
                             </div>
-                            {/* <div className='form-group mt-3'>
-                                <label>NIC</label>
-                                <input type="text" className='form-control' onChange={(e) => setnic(e.target.value)} placeholder="Please enter NIC" defaultValue={RowData.nic} />
-                            </div> */}
                             <div className='form-group mt-3'>
-                                <label>Address</label>
-                                <input type="text" className='form-control' onChange={(e) => setaddress(e.target.value)} placeholder="Vui lòng nhập địa chỉ" defaultValue={RowData.address} />
+                                <label>PASSWORD</label>
+                                <input type="text" className='form-control' onChange={(e) => setPassword(e.target.value)} placeholder="Vui lòng nhập password" defaultValue={RowData.password} />
                             </div>
-                            <Button type='submit' className='btn btn-warning mt-4' onClick={handleEdit}>Edit Employee</Button>
+                            <div className='form-group mt-3'>
+                                <label>INFO</label>
+                                <input type="text" className='form-control' onChange={(e) => setInfo(e.target.value)} placeholder="Vui lòng nhập địa chỉ" defaultValue={RowData.info} />
+                            </div>
+                            <div className='form-group mt-3'>
+                                <label>STATUS</label>
+                                <input type="text" className='form-control' onChange={(e) => setStatus(e.target.value)} placeholder="Vui lòng nhập trạng thái" defaultValue={RowData.status} />
+                            </div>
+                            <div className='form-group mt-3'>
+                                <label>NOTE</label>
+                                <input type="text" className='form-control' onChange={(e) => setNote(e.target.value)} placeholder="Vui lòng nhập ghi chú" defaultValue={RowData.note} />
+                            </div>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant='secondary' onClick={hanldeEditClose}>Close</Button>
+                        <div
+                            className='row'
+                            style={{
+                                width: "100%",
+                                height: "68px",
+                                alignItems: "center",
+                                justifyContent: "flex-end",
+                            }}>
+                            <div
+                                style={{
+                                    width: "45%",
+                                    height: "68px",
+                                }}
+                            >
+                                <Button type='submit' className='btn btn-warning' onClick={handleEdit}>Chỉnh sửa bản ghi</Button>
+
+                            </div>
+                            <div
+                                style={{
+                                    width: "20%",
+                                    height: "68px",
+                                }}>
+                                <Button variant='secondary' onClick={hanldeEditClose}>Hủy</Button>
+
+                            </div>
+                        </div>
+
                     </Modal.Footer>
                 </Modal>
             </div>
