@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Button, Modal, ModalTitle, InputGroup } from 'react-bootstrap'
 import axios from 'axios'
 // import AdvancedPagination from '../components/AdvancedPagination';
-import { Datas } from '../FakeData';
+// import { Datas } from '../FakeData';
 import Form from 'react-bootstrap/Form';
+import * as XLSX from 'xlsx'
 
 const Employee = () => {
     const [Data, setData] = useState([]);
@@ -25,6 +26,8 @@ const Employee = () => {
     const hanldePostClose = () => { SetPostShow(false) }
 
     //Define here local state that store the form Data
+    const [bangArr, setBangArr] = useState()
+
     const [bang, setBang] = useState("")
     const [zip, setZip] = useState("")
     const [gmail, setGmail] = useState("")
@@ -34,11 +37,18 @@ const Employee = () => {
     const [status, setStatus] = useState("")
     const [valueStatus, setValustatus] = useState("");
     const [bangSearch, setBangSearch] = useState("")
-
+    const [gmailSearch, setGmailSearch] = useState("")
 
     const [Delete, setDelete] = useState(false)
     //Id for update record and Delete
     const [id, setId] = useState("");
+
+    // on change states
+    const [excelFile, setExcelFile] = useState(null);
+    const [excelFileError, setExcelFileError] = useState(null);
+
+    // submit
+    const [excelData, setExcelData] = useState([]);
     const URLS = "http://localhost:3000/api-v1/todos"
     const GetEmployeeData = () => {
         var config = {
@@ -57,8 +67,9 @@ const Employee = () => {
             });
     }
     const handleSubmite = () => {
+        console.log("--------------------------", bang);
+
         var data = JSON.stringify({
-            "_id": id,
             "bang": bang,
             "zip": zip,
             "gmail": gmail,
@@ -67,6 +78,7 @@ const Employee = () => {
             "note": note,
             "status": status
         });
+        console.log("lollllllllllllllll", data);
         var config = {
             method: 'post',
             url: `${URLS}/create`,
@@ -167,6 +179,39 @@ const Employee = () => {
                 .catch(function (error) {
                     alert(error);
                 });
+        } else {
+            setBangSearch("")
+            window.location.reload()
+
+        }
+    }
+
+    const searchViewGmail = () => {
+        if (gmailSearch.length > 0) {
+            var data = JSON.stringify({
+                "gmail": gmailSearch
+            });
+            var config = {
+                method: 'post',
+                url: 'http://localhost:3000/api-v1/search/req-gmail',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(config)
+                .then(function (response) {
+                    setData(response.data.results)
+                    setGmailSearch("")
+                })
+                .catch(function (error) {
+                    alert(error);
+                });
+        } else {
+            setGmailSearch("")
+            window.location.reload()
+
         }
     }
 
@@ -202,6 +247,52 @@ const Employee = () => {
 
     }, [valueStatus])
 
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        const formData = new FormData();
+        formData.append("excel", excelFile);
+        try {
+            const response = await axios({
+                method: "post",
+                url: "http://localhost:3000/api-v1/todos/create-file-ex",
+                data: formData,
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+
+            axios(response)
+                .then(function (response) {
+                    // console.log(JSON.stringify(response.data));
+                    window.location.reload()
+                })
+                .catch(function (error) {
+                    // alert(error);
+                    window.location.reload()
+
+                });
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const handleFile = (event) => {
+        setExcelFile(event.target.files[0])
+    }
+
+    const handleDeleteAll = () => {
+        var config = {
+            method: 'post',
+            url: 'http://localhost:3000/api-v1/todos/delete-all',
+            headers: {}
+        };
+        axios(config)
+            .then(function (response) {
+                // console.log(JSON.stringify(response.data));
+                window.location.reload()
+            })
+            .catch(function (error) {
+                alert(error);
+            });
+    }
+
 
     // const indexOfLastPost = currentPage * postsPerPage;
     // const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -218,7 +309,7 @@ const Employee = () => {
                     style={{
                         display: "flex",
                         width: "100%",
-                        height: "68px",
+                        height: "48px",
                         background: "#fff",
                         justifyContent: "flex-end",
                         padding: "16px",
@@ -228,6 +319,11 @@ const Employee = () => {
                     <Button variant="success" onClick={() => { handlePostShow() }}><i className='fa fa-plu'></i>
                         Thêm địa chỉ gmail
                     </Button>
+                    <Button
+                        style={{ marginLeft: "12px" }}
+                        variant="error" onClick={() => { handleDeleteAll() }}><i className='fa fa-plu'></i>
+                        Xóa tất cả bản ghi
+                    </Button>
                 </div>
                 <div
                     className='mt-3 row'
@@ -236,12 +332,50 @@ const Employee = () => {
                         height: "68px",
                     }}>
 
+
+                    <div
+                        style={{
+                            width: "30%",
+                            height: "48px",
+                            position: "absolute",
+                            right: "60%",
+                            top: "30px"
+
+                        }}
+                        className='form'>
+                        <form autoComplete="off"
+                            onSubmit={handleSubmit}>
+                            <label><h5>Tải file excle
+                            </h5></label>
+
+                            <div
+                                style={{ alignItems: "center", }}
+                                className='row'>
+                                <input
+                                    style={{
+                                        width: "50%",
+                                        height: "100%"
+                                    }}
+                                    type='file' className='form-control'
+                                    onChange={handleFile} required></input>
+                                {/* {excelFileError && <div className='text-danger'
+                                    style={{ marginTop: 5 + 'px' }}>{excelFileError}</div>} */}
+                                <button
+
+                                    type='submit' className='btn btn-success'
+                                    style={{ width: "20%", height: "100%", marginLeft: "10px" }}>Xác nhận</button>
+                            </div>
+
+                        </form>
+                    </div>
+
+
                     <div
                         style={{
                             width: "15%",
                             height: "48px",
                             position: "absolute",
-                            right: "30%",
+                            right: "45%",
                         }}
                         className='form-group'>
                         <Form.Select
@@ -260,10 +394,10 @@ const Employee = () => {
 
                     <div
                         style={{
-                            width: "30%",
+                            width: "20%",
                             height: "48px",
                             position: "absolute",
-                            right: "16px",
+                            right: "25%",
                         }}
                         className='form-group'>
                         <InputGroup className="mb-3">
@@ -274,6 +408,28 @@ const Employee = () => {
                                 placeholder="Tìm kiếm theo bang..." />
                             <Button
                                 onClick={() => { searchView() }}
+                                variant="outline-secondary" id="button-addon2">
+                                Tìm kiếm
+                            </Button>
+                        </InputGroup>
+                    </div>
+
+                    <div
+                        style={{
+                            width: "20%",
+                            height: "48px",
+                            position: "absolute",
+                            right: "5%",
+                        }}
+                        className='form-group'>
+                        <InputGroup className="mb-3">
+                            <input
+                                required
+                                type="text" className='form-control'
+                                onChange={(e) => setGmailSearch(e.target.value)}
+                                placeholder="Tìm kiếm theo gmail..." />
+                            <Button
+                                onClick={() => { searchViewGmail() }}
                                 variant="outline-secondary" id="button-addon2">
                                 Tìm kiếm
                             </Button>
