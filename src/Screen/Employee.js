@@ -5,6 +5,7 @@ import axios from 'axios'
 // import { Datas } from '../FakeData';
 import Form from 'react-bootstrap/Form';
 import * as XLSX from 'xlsx'
+import AdvancedPagination from '../components/AdvancedPagination';
 
 const Employee = () => {
     const [Data, setData] = useState([]);
@@ -46,7 +47,8 @@ const Employee = () => {
     // on change states
     const [excelFile, setExcelFile] = useState(null);
     const [excelFileError, setExcelFileError] = useState(null);
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage] = useState(2);
     // submit
     const [excelData, setExcelData] = useState([]);
     const URLS = "http://localhost:3000/api-v1/todos"
@@ -67,8 +69,6 @@ const Employee = () => {
             });
     }
     const handleSubmite = () => {
-        console.log("--------------------------", bang);
-
         var data = JSON.stringify({
             "bang": bang,
             "zip": zip,
@@ -78,7 +78,6 @@ const Employee = () => {
             "note": note,
             "status": status
         });
-        console.log("lollllllllllllllll", data);
         var config = {
             method: 'post',
             url: `${URLS}/create`,
@@ -294,14 +293,13 @@ const Employee = () => {
     }
 
 
-    // const indexOfLastPost = currentPage * postsPerPage;
-    // const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    // const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-    //   {/* <Pagination
-    //                 // postsPerPage={postsPerPage}
-    //                 // totalPosts={posts.length}
-    //                 // paginate={paginate}
-    //                 /> */}
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = Data.slice(indexOfFirstPost, indexOfLastPost);
+
+    const paginate = pageNumber => setCurrentPage(pageNumber);
+
+
     return (
         <div>
             <div>
@@ -386,9 +384,15 @@ const Employee = () => {
                             }}
                             aria-label="Default select example">
                             <option>Tìm theo trạng thái</option>
-                            <option value="1">Sai password</option>
-                            <option value="2">Đã dùng</option>
-                            <option value="3">Chưa dùng</option>
+                            <option value="1">Pay</option>
+                            <option value="2">Sai passWord</option>
+                            <option value="3">2FA</option>
+                            <option value="4">CVV</option>
+                            <option value="5">Acc close</option>
+                            <option value="6">Gỡ thẻ</option>
+                            <option value="7">Không dủ pay</option>
+                            <option value="8">Hết tiền</option>
+                            <option value="9">Thẻ hết hạn</option>
                         </Form.Select>
                     </div>
 
@@ -456,7 +460,7 @@ const Employee = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {Data.map((item, index) =>
+                            {currentPosts.map((item, index) =>
                                 <tr key={item._id}>
                                     <td>{index + 1}</td>
                                     <td>{item.bang}</td>
@@ -464,9 +468,16 @@ const Employee = () => {
                                     <td>{item.gmail}</td>
                                     <td>{item.password}</td>
                                     <td>{item.info}</td>
-                                    <td>{item.status === "1" ? "Sai PassWord"
-                                        : item.status === "2" ? "Đã dùng"
-                                            : item.status === "3" ? "Chưa dùng" : "Trạng thái theo thứ tự 1,2,3"
+                                    <td>{item.status === "1" ? "Pay"
+                                        : item.status === "2" ? "Sai password"
+                                            : item.status === "3" ? "2FA"
+                                                : item.status === "4" ? "CVV"
+                                                    : item.status === "5" ? "Acc close"
+                                                        : item.status === "6" ? "Gỡ thẻ"
+                                                            : item.status === "7" ? "Không đủ pay"
+                                                                : item.status === "8" ? "Hết tiền"
+                                                                    : item.status === "9" ? "Thẻ hết hạn" : "Không xác định"
+
                                     }</td>
                                     <td>{item.note}</td>
 
@@ -486,6 +497,19 @@ const Employee = () => {
                             )}
                         </tbody>
                     </table>
+                    <div
+                        style={{
+                            position: "absolute",
+                            right: "3%",
+                            bottom: "16px",
+                        }}
+                    >
+                        <AdvancedPagination
+                            postsPerPage={postsPerPage}
+                            totalPosts={Data.length}
+                            paginate={paginate}
+                        />
+                    </div>
                 </div>
             </div>
             {/* View Modal */}
@@ -524,9 +548,15 @@ const Employee = () => {
                             <div className='form-group mt-3'>
                                 <label>TRẠNG THÁI</label>
                                 <input type="text" className='form-control' value={
-                                    RowData.status === "1" ? "Sai PassWord"
-                                        : RowData.status === "2" ? "Đã dùng"
-                                            : RowData.status === "3" ? "Chưa dùng" : null} readOnly />
+                                    RowData.status === "1" ? 1
+                                        : RowData.status === "2" ? 2
+                                            : RowData.status === "3" ? 3
+                                                : RowData.status === "4" ? 4
+                                                    : RowData.status === "5" ? 5
+                                                        : RowData.status === "6" ? 6
+                                                            : RowData.status === "7" ? 7
+                                                                : RowData.status === "8" ? 8
+                                                                    : RowData.status === "9" ? 9 : null} readOnly />
                             </div>
                             <div className='form-group mt-3'>
                                 <label>NOTE</label>
