@@ -27,7 +27,6 @@ const Employee = () => {
     const hanldePostClose = () => { SetPostShow(false) }
 
     //Define here local state that store the form Data
-    const [bangArr, setBangArr] = useState()
 
     const [bang, setBang] = useState("")
     const [zip, setZip] = useState("")
@@ -36,7 +35,7 @@ const Employee = () => {
     const [info, setInfo] = useState("")
     const [note, setNote] = useState("")
     const [status, setStatus] = useState("")
-    const [valueStatus, setValustatus] = useState("");
+    const [valueStatus, setValustatus] = useState(null);
     const [bangSearch, setBangSearch] = useState("")
     const [gmailSearch, setGmailSearch] = useState("")
 
@@ -48,7 +47,7 @@ const Employee = () => {
     const [excelFile, setExcelFile] = useState(null);
     const [excelFileError, setExcelFileError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [postsPerPage] = useState(2);
+    const [postsPerPage, setPostsPerPage] = useState(2);
     // submit
     const [excelData, setExcelData] = useState([]);
     const URLS = "http://localhost:3000/api-v1/todos"
@@ -61,6 +60,7 @@ const Employee = () => {
         axios(config)
             .then(function (response) {
                 setData(response.data.results)
+                // setPostsPerPage(response.data.results)
             })
             .catch(function (error) {
                 // console.log(error);
@@ -217,13 +217,10 @@ const Employee = () => {
 
 
     const handleSearchStatus = (e) => {
-        console.log(e.target.value);
-        setValustatus(e.target.value);
-    }
+        // console.log(e.target.value);
 
-    useEffect(() => {
         var data = JSON.stringify({
-            "status": valueStatus
+            "status": e.target.value
         });
         var config = {
             method: 'post',
@@ -237,14 +234,25 @@ const Employee = () => {
 
         axios(config)
             .then(async function (response) {
-                console.log(response.data.results);
-                await setData(response.data.results)
+                // console.log(response.data.results);
+                setData(response.data.results)
+                setValustatus(e.target.value);
+
+
             })
             .catch(function (error) {
                 alert(error);
             });
 
-    }, [valueStatus])
+
+    }
+
+    // useEffect(() => {
+    //     // handleSearchStatus()
+
+    // }, [valueStatus])
+
+
 
     const handleSubmit = async (event) => {
         event.preventDefault()
