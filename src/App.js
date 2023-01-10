@@ -1,10 +1,17 @@
-import logo from './logo.svg';
+import React from "react";
 import './App.css';
 import Employee from './Screen/Employee';
+import ScreenLogin from "./Screen/ScreenLogin"
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-function App() {
+const App = () => {
   return (
-    <Employee/>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<ScreenLogin />} />
+        <Route path="/todolist" element={<Employee />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -15,13 +15,19 @@ const AdvancedPagination = ({ postsPerPage, totalPosts, paginate }) => {
             <ul className='pagination'>
                 {pageNumbers.map(number => (
                     <li key={number} className='page-item'>
-                        <a onClick={() => paginate(number)} href='!#' className='page-link'>
+                        <a
+
+                            onClick={(event) => {
+                                event.preventDefault()
+                                paginate(number)
+                            }
+                            } href='!#' className='page-link'>
                             {number}
                         </a>
                     </li>
                 ))}
             </ul>
-        </nav>
+        </nav >
 
     )
 }
