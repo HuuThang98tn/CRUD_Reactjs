@@ -48,7 +48,7 @@ const Employee = () => {
     const [excelFile, setExcelFile] = useState(null);
     const [excelFileError, setExcelFileError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [postsPerPage, setPostsPerPage] = useState(2);
+    const [postsPerPage, setPostsPerPage] = useState(30);
     // submit
     const [excelData, setExcelData] = useState([]);
     const [authenticated, setauthenticated] = useState(localStorage.getItem("authenticated"));
@@ -199,7 +199,7 @@ const Employee = () => {
                 });
         } else {
             setBangSearch("")
-            window.location.reload()
+            // window.location.reload()
 
         }
     }
@@ -229,7 +229,7 @@ const Employee = () => {
                 });
         } else {
             setGmailSearch("")
-            window.location.reload()
+            // window.location.reload()
 
         }
     }
@@ -238,7 +238,7 @@ const Employee = () => {
 
     const handleSearchStatus = (e) => {
         // console.log(e.target.value);
-
+        setValustatus(e.target.value);
         var data = JSON.stringify({
             "status": e.target.value
         });
@@ -258,7 +258,6 @@ const Employee = () => {
             .then(async function (response) {
                 // console.log(response.data.results);
                 setData(response.data.results)
-                setValustatus(e.target.value);
             })
             .catch(function (error) {
                 alert(error);
@@ -576,15 +575,15 @@ const Employee = () => {
                                 <div className='form-group mt-3'>
                                     <label>TRẠNG THÁI</label>
                                     <input type="text" className='form-control' value={
-                                        RowData.status === "1" ? 1
-                                            : RowData.status === "2" ? 2
-                                                : RowData.status === "3" ? 3
-                                                    : RowData.status === "4" ? 4
-                                                        : RowData.status === "5" ? 5
-                                                            : RowData.status === "6" ? 6
-                                                                : RowData.status === "7" ? 7
-                                                                    : RowData.status === "8" ? 8
-                                                                        : RowData.status === "9" ? 9 : null} readOnly />
+                                        RowData.status === "1" ? "Pay"
+                                            : RowData.status === "2" ? "Sai Password"
+                                                : RowData.status === "3" ? "2FA"
+                                                    : RowData.status === "4" ? "CVV"
+                                                        : RowData.status === "5" ? "Acc close"
+                                                            : RowData.status === "6" ? "Gỡ thẻ"
+                                                                : RowData.status === "7" ? "Không đủ Pay"
+                                                                    : RowData.status === "8" ? "Hết tiền"
+                                                                        : RowData.status === "9" ? "Thẻ hết hạn" : "Không xác định"} readOnly />
                                 </div>
                                 <div className='form-group mt-3'>
                                     <label>NOTE</label>
