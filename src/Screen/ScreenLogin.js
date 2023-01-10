@@ -26,7 +26,7 @@ const ScreenLogin = () => {
 
         var config = {
             method: 'post',
-            url: 'http://localhost:3000/api-v1/users/login',
+            url: 'http://13.213.37.28:80/api-v1/users/login',
             headers: {
                 'Content-Type': 'application/json'
             },

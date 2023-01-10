@@ -56,7 +56,7 @@ const Employee = () => {
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = Data.slice(indexOfFirstPost, indexOfLastPost);
-    const URLS = "http://localhost:3000/api-v1/todos"
+    const URLS = "http://13.213.37.28:80/api-v1/todos"
 
 
     useEffect(() => {
@@ -181,7 +181,7 @@ const Employee = () => {
             });
             var config = {
                 method: 'post',
-                url: 'http://localhost:3000/api-v1/search/bang',
+                url: 'http://13.213.37.28:80/api-v1/search/bang',
                 headers: {
                     'Content-Type': 'application/json',
                     'token': `Bearer ${authenticated}`
@@ -211,7 +211,7 @@ const Employee = () => {
             });
             var config = {
                 method: 'post',
-                url: 'http://localhost:3000/api-v1/search/req-gmail',
+                url: 'http://13.213.37.28:80/api-v1/search/req-gmail',
                 headers: {
                     'Content-Type': 'application/json',
                     'token': `Bearer ${authenticated}`
@@ -244,7 +244,7 @@ const Employee = () => {
         });
         var config = {
             method: 'post',
-            url: 'http://localhost:3000/api-v1/search/status',
+            url: 'http://13.213.37.28:80/api-v1/search/status',
             headers: {
                 'Content-Type': 'application/json',
                 'token': `Bearer ${authenticated}`
@@ -273,7 +273,7 @@ const Employee = () => {
         try {
             const response = await axios({
                 method: "post",
-                url: "http://localhost:3000/api-v1/todos/create-file-ex",
+                url: "http://13.213.37.28:80/api-v1/todos/create-file-ex",
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },
             });
@@ -299,7 +299,7 @@ const Employee = () => {
     const handleDeleteAll = () => {
         var config = {
             method: 'post',
-            url: 'http://localhost:3000/api-v1/todos/delete-all',
+            url: 'http://13.213.37.28:80/api-v1/todos/delete-all',
             headers: {
                 'token': `Bearer ${authenticated}`
             }
