@@ -161,7 +161,7 @@ const Employee = () => {
         axios(config)
             .then(function (response) {
                 console.log(JSON.stringify(response.data));
-                // window.location.reload()
+                window.location.reload()
             })
             .catch(function (error) {
                 console.log(error);
