@@ -26,7 +26,7 @@ const ScreenLogin = () => {
 
         var config = {
             method: 'post',
-            url: 'http://13.213.37.28:80/api-v1/users/login',
+            url: 'https://nodejs-crurd-bxv.herokuapp.com/api-v1/users/login',
             headers: {
                 'Content-Type': 'application/json'
             },
