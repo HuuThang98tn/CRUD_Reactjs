@@ -56,7 +56,7 @@ const Employee = () => {
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = Data.slice(indexOfFirstPost, indexOfLastPost);
-    const URLS = "http://13.213.37.28:80/api-v1/todos"
+    const URLS = "https://nodejs-crurd-bxv.herokuapp.com/api-v1/todos"
 
 
     useEffect(() => {
@@ -181,7 +181,7 @@ const Employee = () => {
             });
             var config = {
                 method: 'post',
-                url: 'http://13.213.37.28:80/api-v1/search/bang',
+                url: 'https://nodejs-crurd-bxv.herokuapp.com/api-v1/search/bang',
                 headers: {
                     'Content-Type': 'application/json',
                     'token': `Bearer ${authenticated}`
@@ -211,7 +211,7 @@ const Employee = () => {
             });
             var config = {
                 method: 'post',
-                url: 'http://13.213.37.28:80/api-v1/search/req-gmail',
+                url: 'https://nodejs-crurd-bxv.herokuapp.com/api-v1/search/req-gmail',
                 headers: {
                     'Content-Type': 'application/json',
                     'token': `Bearer ${authenticated}`
@@ -244,7 +244,7 @@ const Employee = () => {
         });
         var config = {
             method: 'post',
-            url: 'http://13.213.37.28:80/api-v1/search/status',
+            url: 'https://nodejs-crurd-bxv.herokuapp.com/api-v1/search/status',
             headers: {
                 'Content-Type': 'application/json',
                 'token': `Bearer ${authenticated}`
@@ -273,7 +273,7 @@ const Employee = () => {
         try {
             const response = await axios({
                 method: "post",
-                url: "http://13.213.37.28:80/api-v1/todos/create-file-ex",
+                url: "https://nodejs-crurd-bxv.herokuapp.com/api-v1/todos/create-file-ex",
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },
             });
@@ -299,7 +299,7 @@ const Employee = () => {
     const handleDeleteAll = () => {
         var config = {
             method: 'post',
-            url: 'http://13.213.37.28:80/api-v1/todos/delete-all',
+            url: 'https://nodejs-crurd-bxv.herokuapp.com/api-v1/todos/delete-all',
             headers: {
                 'token': `Bearer ${authenticated}`
             }
