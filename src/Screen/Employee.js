@@ -121,17 +121,17 @@ const Employee = () => {
 
         var data = JSON.stringify({
             "_id": id,
-            "bang": bang,
-            "zip": zip,
-            "gmail": gmail,
-            "password": password,
-            "info": info,
-            "note": note,
-            "status": status
+            "bang": bang ? bang : RowData.bang,
+            "zip": zip ? zip : RowData.zip,
+            "gmail": gmail ? gmail : RowData.gmail,
+            "password": password ? password : RowData.password,
+            "info": info ? info : RowData.info,
+            "note": note ? note : RowData.note,
+            "status": status ? status : RowData.status
         });
         var config = {
             method: 'post',
-            url: `${URLS}}/update-byId`,
+            url: `${URLS}/update-byId`,
             headers: {
                 'Content-Type': 'application/json',
                 'token': `Bearer ${authenticated}`
