@@ -16,10 +16,16 @@ const Employee = () => {
     const hanldeViewClose = () => { SetViewShow(false) }
     //FOr Edit Model
     const [ViewEdit, SetEditShow] = useState(false)
+    const [viewConfirm, setViewConfirm] = useState(false)
+
     const handleEditShow = () => { SetEditShow(true) }
     const hanldeEditClose = () => { SetEditShow(false) }
+
+    const hanldeConfirmClose = () => { setViewConfirm(false) }
+
     //FOr Delete Model
     const [ViewDelete, SetDeleteShow] = useState(false)
+
     const handleDeleteShow = () => { SetDeleteShow(true) }
     const hanldeDeleteClose = () => { SetDeleteShow(false) }
     //FOr Add New Data Model
@@ -314,6 +320,10 @@ const Employee = () => {
             });
     }
 
+    const hanldeConfirmDeleteAll = () => {
+        setViewConfirm(true)
+    }
+
     const paginate = pageNumber => setCurrentPage(pageNumber);
 
     if (authenticated === null || authenticated === undefined) {
@@ -338,10 +348,13 @@ const Employee = () => {
                         </Button>
                         <Button
                             style={{ marginLeft: "12px" }}
-                            variant="error" onClick={() => { handleDeleteAll() }}><i className='fa fa-plu'></i>
+                            variant="error"
+                            onClick={() => { hanldeConfirmDeleteAll() }}
+                        ><i className='fa fa-plu'></i>
                             Xóa tất cả bản ghi
                         </Button>
                     </div>
+
                     <div
                         className='mt-3 row'
                         style={{
@@ -527,8 +540,7 @@ const Employee = () => {
                         <div
                             style={{
                                 position: "absolute",
-                                right: "3%",
-                                bottom: "16px",
+                                right: "2%",
                             }}
                         >
                             <AdvancedPagination
@@ -622,6 +634,7 @@ const Employee = () => {
                             </div>
 
                         </Modal.Footer>
+
                     </Modal>
                 </div>
                 {/* Modal for submit data to database */}
@@ -772,6 +785,40 @@ const Employee = () => {
                         </Modal.Footer>
                     </Modal>
                 </div>
+
+                {/* ModalConfirm */}
+                <div
+                    className="model-box-view"
+                    style={{ display: 'block', position: 'initial' }}
+                >
+                    <Modal
+                        show={viewConfirm}
+                        onHide={hanldeConfirmClose}
+                        backdrop="static"
+                        keyboard={false}
+                    >
+
+                        <Modal.Header closeButton>
+                            <Modal.Title>Thông báo</Modal.Title>
+                        </Modal.Header>
+
+                        <Modal.Body>
+                            <p>Bạn có chắc chắn muốn xóa bản ghi này không?</p>
+                        </Modal.Body>
+
+                        <Modal.Footer>
+                            <Button
+                                onClick={hanldeConfirmClose}
+                                variant="secondary">Hủy</Button>
+                            <Button
+                                onClick={handleDeleteAll}
+                                variant="primary">Đồng ý</Button>
+                        </Modal.Footer>
+
+                    </Modal>
+                </div>
+
+
             </div >
         );
     }
